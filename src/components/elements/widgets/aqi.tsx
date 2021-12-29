@@ -30,7 +30,7 @@ export function AqiWidget() {
   // Interval for 10s and initial API call
   useInterval(() => {
     aqiApiCall();
-  }, 30000);
+  }, 180000);
   useEffect(() => {
     aqiApiCall();
   }, []);
