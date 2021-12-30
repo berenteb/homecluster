@@ -78,8 +78,8 @@ export function DockerWidget() {
       {dockerData.stopped.length > 0 && (
         <Widget>
           <WidgetDescription>A következő tárolók nem futnak:</WidgetDescription>
-          {dockerData.stopped.map((container) => (
-            <WidgetDescription>{container.Image}</WidgetDescription>
+          {dockerData.stopped.map((container, index) => (
+            <WidgetDescription key={index}>{container.Image}</WidgetDescription>
           ))}
           <WidgetText>Docker</WidgetText>
         </Widget>
