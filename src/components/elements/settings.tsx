@@ -12,6 +12,7 @@ type SettingsForm = {
   lat: string | number;
   lon: string | number;
   backgroundUrl: string;
+  dockerUrl: string;
 };
 
 export function Settings() {
@@ -26,11 +27,14 @@ export function Settings() {
     setBackgroundUrl,
     backgroundEnabled,
     setBackgroundEnabled,
+    dockerUrl,
+    setDockerUrl,
   } = useContext<SettingsContextType>(SettingsContext);
   const defaultValues = {
     lat: staticCoordinates.lat,
     lon: staticCoordinates.lon,
     backgroundUrl: backgroundUrl,
+    dockerUrl: dockerUrl,
   };
   const {
     handleSubmit,
@@ -60,6 +64,7 @@ export function Settings() {
       }
     }
     setBackgroundUrl(values.backgroundUrl);
+    setDockerUrl(values.dockerUrl);
     setSettingsOverlayVisible(false);
   };
   if (!settingsOverlayVisible) return null;
@@ -99,6 +104,12 @@ export function Settings() {
           <TextField {...register("backgroundUrl")} />
           {errors.backgroundUrl && (
             <ErrorText>{errors.backgroundUrl?.message}</ErrorText>
+          )}
+
+          <h3>Docker URL</h3>
+          <TextField {...register("dockerUrl")} />
+          {errors.dockerUrl && (
+            <ErrorText>{errors.dockerUrl?.message}</ErrorText>
           )}
 
           <ButtonGroup>

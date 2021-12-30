@@ -11,6 +11,7 @@ const LocalStorageKeys = {
   STATIC_COORDS_LAT: "lat",
   STATIC_COORDS_LON: "lon",
   BACKGROUND_URL: "backgroundUrl",
+  DOCKER_URL: "dockerUrl",
 };
 
 export type Coordinates = {
@@ -38,6 +39,8 @@ export type SettingsContextType = {
   setSettingsOverlayVisible: (visible: boolean) => void;
   backgroundUrl: string;
   setBackgroundUrl: (url: string) => void;
+  dockerUrl: string;
+  setDockerUrl: (url: string) => void;
 };
 
 export const SettingsContext = createContext<SettingsContextType>({
@@ -54,6 +57,8 @@ export const SettingsContext = createContext<SettingsContextType>({
   setSettingsOverlayVisible: () => {},
   backgroundUrl: "",
   setBackgroundUrl: () => {},
+  dockerUrl: "",
+  setDockerUrl: () => {},
 });
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
@@ -74,6 +79,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   const [backgroundUrl, setBackgroundUrlState] = useState<string>(
     localStorage.getItem(LocalStorageKeys.BACKGROUND_URL) || ""
+  );
+
+  const [dockerUrl, setDockerUrlState] = useState<string>(
+    localStorage.getItem(LocalStorageKeys.DOCKER_URL) || ""
   );
 
   const setLocationEnabled = (enabled: boolean) => {
@@ -137,6 +146,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setBackgroundUrlState(url);
   };
 
+  const setDockerUrl = (url: string) => {
+    localStorage.setItem(LocalStorageKeys.DOCKER_URL, url);
+    setDockerUrlState(url);
+  };
+
   return (
     <SettingsContext.Provider
       value={{
@@ -151,6 +165,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setSettingsOverlayVisible: setSettingsOverlayVisible,
         backgroundUrl: backgroundUrl,
         setBackgroundUrl: setBackgroundUrl,
+        dockerUrl: dockerUrl,
+        setDockerUrl: setDockerUrl,
       }}
     >
       {children}
