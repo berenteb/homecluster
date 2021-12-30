@@ -89,4 +89,5 @@ function Layout({ children }: { children: ReactNode }) {
 const MarginContainer = styled.div`
   width: 90%;
   padding: 50px;
+  margin: auto;
 `;
