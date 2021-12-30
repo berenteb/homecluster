@@ -2,9 +2,7 @@ export function getDockerData({ url }: { url: URL }) {
   url.searchParams.set("all", "true");
   return new Promise<DockerContainer[]>(
     (resolve: (values: DockerContainer[]) => void, reject) => {
-      fetch(url.toString(), {
-        headers: { "Access-Control-Allow-Origin": "*" },
-      })
+      fetch(url.toString())
         .then(async (response) => {
           if (response.status === 200) return response.json();
           reject(await response.text());
