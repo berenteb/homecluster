@@ -12,6 +12,7 @@ import { ThemeContext, ThemeContextProvider } from "./utils/theme-context";
 import { ThemeOverlay } from "./components/elements/theme-overlay";
 import { AqiWidget } from "./components/elements/widgets/aqi";
 import { ClockWidget } from "./components/elements/widgets/clock";
+import { DockerWidget } from "./components/elements/widgets/docker";
 
 export function App() {
   return (
@@ -27,6 +28,7 @@ export function App() {
                 <ClockWidget />
                 <WeatherWidget />
                 <AqiWidget />
+                <DockerWidget />
               </WidgetArea>
             </MarginContainer>
           </Layout>

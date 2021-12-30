@@ -46,6 +46,7 @@ export const colors = {
   secondary: "#0A2463",
   green: "#40b971",
   danger: "#fa4c4c",
+  warning: "#fac94c",
   glassWhite: "rgba( 255, 255, 255, 0.50 )",
   glassDark: "rgba(104,132,201,0.5)",
   background: "beige",

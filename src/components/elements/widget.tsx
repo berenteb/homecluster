@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { ReactNode } from "react";
 import { Glassmorphism } from "./glassmorphism";
+import { spacing } from "../../theme/theme";
 
 export const WidgetArea = styled.div`
   width: 100%;
@@ -41,15 +42,15 @@ export const WidgetWrapper = styled.div`
     height: 150px;
     line-height: 150px;
     font-size: 100px;
-    fill: ${({ theme }) => theme.primaryColor};
   }
 `;
 
 export const WidgetText = styled.h2`
   font-size: 50px;
-  margin: 0;
+  margin: ${spacing.sm};
 `;
 
-export const WidgetDescription = styled.h2`
-  font-style: italic;
+export const WidgetDescription = styled.p`
+  font-size: 30px;
+  margin: ${spacing.xs};
 `;
