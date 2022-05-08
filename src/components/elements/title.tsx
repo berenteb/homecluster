@@ -1,35 +1,36 @@
 import styled from "styled-components";
 import { useContext, useState } from "react";
-import { SettingsContext } from "../../utils/settings-context";
+import { useSettingsContext } from "../../utils/settings-context";
 import { ThemeContext } from "../../utils/theme-context";
-import { Settings } from "@styled-icons/fluentui-system-regular/Settings";
-import { Palette } from "@styled-icons/boxicons-regular/Palette";
-import { animations } from "../../theme/theme";
+import { VscGear } from "react-icons/vsc";
+import { FaPalette } from "react-icons/fa";
+import { animations, spacing } from "../../theme/theme";
 import { Glassmorphism } from "./glassmorphism";
 import { useInterval } from "../../utils/use-interval";
 
 export function Title() {
-  const { setSettingsOverlayVisible } = useContext(SettingsContext);
+  const { setSettingsOverlayVisible } = useSettingsContext();
   const { setThemeOverlayVisible } = useContext(ThemeContext);
   const [time, setTime] = useState<Date>(new Date());
   useInterval(() => {
     setTime(new Date());
   }, 60000);
   let greetingText = "Jó napot!";
-  if (time.getHours() < 11) greetingText = "Jó reggelt!";
-  if (time.getHours() > 18) greetingText = "Jó estét!";
-  if (time.getHours() > 22) greetingText = "Jó éjszakát!";
+  const hours = time.getHours();
+  if (hours < 6 || hours > 22) greetingText = "Jó éjszakát!";
+  else if (hours < 11 && hours >= 6) greetingText = "Jó reggelt!";
+  else if (hours > 18) greetingText = "Jó estét!";
   return (
     <TitleWrapper>
       <TitleText>{greetingText}</TitleText>
       <OverlayButtons>
         <Glassmorphism>
-          <Palette
+          <FaPalette
             onClick={() => {
               setThemeOverlayVisible(true);
             }}
           />
-          <Settings
+          <VscGear
             onClick={() => {
               setSettingsOverlayVisible(true);
             }}
@@ -42,16 +43,12 @@ export function Title() {
 
 const OverlayButtons = styled.div`
   display: none;
-  ${Glassmorphism} {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   > * > * {
-    height: 50px;
+    font-size: 50px;
     cursor: pointer;
     transition: 0.2s ease-in;
     ${animations.rotate}
+    margin: ${spacing.xs};
   }
 `;
 

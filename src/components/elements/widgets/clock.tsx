@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useInterval } from "../../../utils/use-interval";
-import styled from "styled-components";
-import { Widget } from "../widget";
+import { DataWrapper, Widget, WidgetSubText, WidgetText } from "../widget";
+import { BiTime } from "react-icons/bi";
 
 export function ClockWidget() {
   return (
     <Widget>
+      <BiTime />
       <Clock />
     </Widget>
   );
@@ -16,9 +17,10 @@ export function Clock() {
   useInterval(() => {
     setTime(new Date());
   }, 1000);
-  return <ClockWrapper>{time.toLocaleTimeString()}</ClockWrapper>;
+  return (
+    <DataWrapper>
+      <WidgetText>{time.toLocaleTimeString()}</WidgetText>
+      <WidgetSubText>{time.toLocaleDateString()}</WidgetSubText>
+    </DataWrapper>
+  );
 }
-
-const ClockWrapper = styled.p`
-  font-size: 50px;
-`;

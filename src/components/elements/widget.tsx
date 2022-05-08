@@ -11,10 +11,11 @@ export const WidgetArea = styled.div`
   grid-row-gap: 20px;
   flex-direction: row;
   padding-bottom: 20px;
-  @media screen and (max-width: 1200px) {
+  box-sizing: border-box;
+  @media screen and (max-width: 1800px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 1300px) {
     grid-template-columns: 1fr;
   }
 `;
@@ -32,25 +33,36 @@ export const WidgetWrapper = styled.div`
   border-radius: 20px;
   padding: 10px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: ${({ theme }) => theme.primaryColor};
+  width: 100%;
   svg,
   i {
-    height: 150px;
-    line-height: 150px;
-    font-size: 100px;
+    font-size: 70px;
+  }
+  * {
+    margin-right: 10px;
   }
 `;
 
 export const WidgetText = styled.h2`
   font-size: 50px;
-  margin: ${spacing.sm};
+  margin: ${spacing.xs};
 `;
 
-export const WidgetDescription = styled.p`
+export const WidgetSubText = styled.p`
   font-size: 30px;
+  opacity: 0.5;
   margin: ${spacing.xs};
+  display: flex;
+  align-items: center;
+  svg,
+  i {
+    font-size: 30px;
+  }
+`;
+
+export const DataWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: ${spacing.sm};
 `;

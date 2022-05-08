@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useState } from "react";
 
-const DEFAULT_PRIMARY_COLOR = "#183952";
+const DEFAULT_PRIMARY_COLOR = "#455a64";
+const DEFAULT_GLASS_COLOR = "#ffffff";
 
 const LocalStorageKeys = {
   PRIMARY_COLOR: "primaryColor",
@@ -18,7 +19,7 @@ export type ThemeContextType = {
 
 export const ThemeContext = createContext<ThemeContextType>({
   primaryColor: DEFAULT_PRIMARY_COLOR,
-  glassColor: DEFAULT_PRIMARY_COLOR,
+  glassColor: DEFAULT_GLASS_COLOR,
   setPrimaryColor: () => {},
   setGlassColor: () => {},
   themeOverlayVisible: false,
@@ -32,7 +33,7 @@ export function ThemeContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [glassColor, setGlassColorState] = useState<string>(
-    localStorage.getItem(LocalStorageKeys.GLASS_COLOR) || DEFAULT_PRIMARY_COLOR
+    localStorage.getItem(LocalStorageKeys.GLASS_COLOR) || DEFAULT_GLASS_COLOR
   );
 
   const [themeOverlayVisible, setThemeOverlayVisibleState] =

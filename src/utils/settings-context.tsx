@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 const DEFAULT_COORDINATES: Coordinates = {
   lat: 47.473443,
@@ -41,6 +41,8 @@ export type SettingsContextType = {
   setBackgroundUrl: (url: string) => void;
   dockerUrl: string;
   setDockerUrl: (url: string) => void;
+  darkMode: boolean;
+  setDarkMode: (enabled: boolean) => void;
 };
 
 export const SettingsContext = createContext<SettingsContextType>({
@@ -59,6 +61,8 @@ export const SettingsContext = createContext<SettingsContextType>({
   setBackgroundUrl: () => {},
   dockerUrl: "",
   setDockerUrl: () => {},
+  darkMode: false,
+  setDarkMode: () => {},
 });
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
@@ -151,6 +155,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setDockerUrlState(url);
   };
 
+  const [darkMode, setDarkMode] = useState(false);
+
   return (
     <SettingsContext.Provider
       value={{
@@ -167,9 +173,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setBackgroundUrl: setBackgroundUrl,
         dockerUrl: dockerUrl,
         setDockerUrl: setDockerUrl,
+        darkMode: darkMode,
+        setDarkMode: setDarkMode,
       }}
     >
       {children}
     </SettingsContext.Provider>
   );
 }
+
+export const useSettingsContext = () =>
+  useContext<SettingsContextType>(SettingsContext);

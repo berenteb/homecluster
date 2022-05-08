@@ -1,27 +1,40 @@
-import { Coordinates } from "./settings-context";
+import { useSettingsContext } from "./settings-context";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useInterval } from "./use-interval";
 
 const url = new URL("https://api.weatherbit.io/v2.0/current");
 
-export function getAqiData({ lat, lon }: Coordinates) {
-  const apiKey = process.env.REACT_APP_AQI_KEY;
-  url.searchParams.set("lat", lat.toString());
-  url.searchParams.set("lon", lon.toString());
-  url.searchParams.set("key", apiKey || "");
-  return new Promise<Aqi>((resolve: (values: Aqi) => void, reject) => {
-    if (!apiKey) reject("Nincs API kulcs!");
-    fetch(url.toString(), { headers: { "Access-Control-Allow-Origin": "*" } })
-      .then(async (response) => {
-        if (response.status === 200) return response.json();
-        reject(await response.text());
-      })
-      .then((data) => {
-        resolve(data);
-      })
-      .catch((e) => {
-        reject(e);
-      });
-  });
-}
+export const useAqi = () => {
+  const [aqi, setAqi] = useState<Aqi>();
+  const [error, setError] = useState<string>();
+  const { getLocation } = useSettingsContext();
+
+  const apiCall = () => {
+    getLocation().then(({ lat, lon }) => {
+      const apiKey = process.env.REACT_APP_AQI_KEY;
+      if (!apiKey) {
+        setError("Nincs API kulcs!");
+        return;
+      }
+      url.searchParams.set("lat", lat.toString());
+      url.searchParams.set("lon", lon.toString());
+      url.searchParams.set("key", apiKey || "");
+      axios
+        .get<Aqi>(url.toString())
+        .then((response) => {
+          setError(undefined);
+          setAqi(response.data);
+        })
+        .catch((err) => setError(err));
+    });
+  };
+
+  useEffect(apiCall, []);
+  useInterval(apiCall, 180000);
+
+  return { aqi, error };
+};
 
 export interface Aqi {
   data?: DataEntity[] | null;

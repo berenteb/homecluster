@@ -44,12 +44,13 @@ export const colors = {
   darkTheme: "white",
   primaryTranslucent: "rgba(62,146,204,0.15)",
   secondary: "#0A2463",
-  green: "#40b971",
-  danger: "#fa4c4c",
-  warning: "#fac94c",
+  green: "#6DC193",
+  danger: "#EF6154",
+  warning: "#F7B34C",
+  gray: "#AEB5C1",
   glassWhite: "rgba( 255, 255, 255, 0.50 )",
   glassDark: "rgba(104,132,201,0.5)",
-  background: "beige",
+  background: "#d9d9d9",
 };
 
 export const animations = {

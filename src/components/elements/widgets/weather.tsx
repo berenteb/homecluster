@@ -1,63 +1,99 @@
-import { Widget, WidgetText } from "../widget";
-import { useContext, useEffect, useState } from "react";
-import { getWeatherData, Weather } from "../../../utils/weather";
-import {
-  SettingsContext,
-  SettingsContextType,
-} from "../../../utils/settings-context";
-import { WeatherIcon } from "weather-react-icons";
-import { Umbrella } from "@styled-icons/ionicons-outline/Umbrella";
-import { WeatherSnowflake } from "@styled-icons/fluentui-system-filled/WeatherSnowflake";
-import "weather-react-icons/lib/css/weather-icons.css";
-import { useInterval } from "../../../utils/use-interval";
+import { DataWrapper, Widget, WidgetSubText, WidgetText } from "../widget";
+import { useWeather } from "../../../utils/weather";
+import { FiArrowDown, FiArrowUp } from "react-icons/fi";
 
 export function WeatherWidget() {
-  const [weather, setWeather] = useState<Weather>();
-  const [error, setError] = useState<string | undefined>();
-  const { getLocation } = useContext<SettingsContextType>(SettingsContext);
-  const weatherApiCall = () => {
-    getLocation()
-      .then((coords) => {
-        getWeatherData(coords)
-          .then((data) => {
-            setWeather(data);
-            setError(undefined);
-          })
-          .catch((error) => {
-            setError(error.toString());
-          });
-      })
-      .catch((error) => setError(error.toString()));
-  };
-  // Interval for 10s and initial API call
-  useInterval(() => {
-    weatherApiCall();
-  }, 30000);
-  useEffect(() => {
-    weatherApiCall();
-  }, []);
-  if (!weather?.main.temp || error) {
+  const { weather, error } = useWeather();
+  if (!weather?.current.temp || error) {
     return null;
   }
+
+  const rain = weather.current.rain?.["1h"];
+  const snow = weather.current.snow?.["1h"];
+
+  let nextRain = weather.minutely.find((m) => m.precipitation > 0)?.dt;
+  if (!nextRain) nextRain = weather.hourly.slice(0, 3).find((h) => h.rain)?.dt;
+  const nextSnow = weather.hourly.slice(0, 3).find((h) => h.snow)?.dt;
+
+  let rainEnd = weather.minutely.find((m) => m.precipitation === 0)?.dt;
+  if (!rainEnd) rainEnd = weather.hourly.slice(1).find((m) => !m.rain)?.dt;
+
+  let snowEnd = weather.hourly.slice(1).find((m) => !m.snow)?.dt;
   return (
     <>
       <Widget>
-        <WeatherIcon
-          iconId={weather?.weather?.[0].id || 800}
-          name="owm"
-          night={
-            window.matchMedia &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches
-          }
-        />
-        <WidgetText>{Math.round(weather.main.temp) - 273}°</WidgetText>
-      </Widget>
-      {(weather.snow || weather.rain) && (
-        <Widget>
-          {weather.snow ? <WeatherSnowflake /> : <Umbrella />}
+        {weather.current?.weather?.[0].icon && (
+          <img
+            src={`http://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`}
+            alt={":("}
+          />
+        )}
+        <DataWrapper>
           <WidgetText>
-            {weather.snow?.["1h"] || weather.rain?.["1h"] || 0}mm
+            {Math.round(weather.current.temp) - 273}°
+            {(snow || rain) && " | " + (snow || rain) + "mm"}
           </WidgetText>
+          <WidgetSubText>
+            <FiArrowDown />
+            {Math.round(weather.daily[0]?.temp.min) - 273}° | <FiArrowUp />
+            {Math.round(weather.daily[0]?.temp.max) - 273}°
+          </WidgetSubText>
+        </DataWrapper>
+      </Widget>
+      {nextRain && !rain && (
+        <Widget>
+          <img src={`http://openweathermap.org/img/wn/09d@2x.png`} alt={":("} />
+          <DataWrapper>
+            <WidgetText>
+              {new Date(nextRain * 1000).toLocaleTimeString("hu-HU", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </WidgetText>
+            <WidgetSubText>Eső várható</WidgetSubText>
+          </DataWrapper>
+        </Widget>
+      )}
+      {rain && rainEnd && !snow && (
+        <Widget>
+          <img src={`http://openweathermap.org/img/wn/04d@2x.png`} alt={":("} />
+          <DataWrapper>
+            <WidgetText>
+              {new Date(rainEnd * 1000).toLocaleTimeString("hu-HU", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </WidgetText>
+            <WidgetSubText>Eső vége</WidgetSubText>
+          </DataWrapper>
+        </Widget>
+      )}
+      {snow && snowEnd && (
+        <Widget>
+          <img src={`http://openweathermap.org/img/wn/04d@2x.png`} alt={":("} />
+          <DataWrapper>
+            <WidgetText>
+              {new Date(snowEnd * 1000).toLocaleTimeString("hu-HU", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </WidgetText>
+            <WidgetSubText>Havazás vége</WidgetSubText>
+          </DataWrapper>
+        </Widget>
+      )}
+      {nextSnow && (
+        <Widget>
+          <img src={`http://openweathermap.org/img/wn/13d@2x.png`} alt={":("} />
+          <DataWrapper>
+            <WidgetText>
+              {new Date(nextSnow).toLocaleTimeString("hu-HU", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </WidgetText>
+            <WidgetSubText>Havazás várható</WidgetSubText>
+          </DataWrapper>
         </Widget>
       )}
     </>

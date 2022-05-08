@@ -1,57 +1,31 @@
-import { Widget, WidgetText } from "../widget";
-import { useContext, useEffect, useState } from "react";
-import {
-  SettingsContext,
-  SettingsContextType,
-} from "../../../utils/settings-context";
-import { useInterval } from "../../../utils/use-interval";
-import { Aqi, getAqiData } from "../../../utils/aqi";
+import { DataWrapper, Widget, WidgetSubText, WidgetText } from "../widget";
+import { useAqi } from "../../../utils/aqi";
 import styled from "styled-components";
-import { spacing } from "../../../theme/theme";
+import { colors, spacing } from "../../../theme/theme";
 
 export function AqiWidget() {
-  const [aqi, setAqi] = useState<Aqi>();
-  const [error, setError] = useState<string | undefined>();
-  const { getLocation } = useContext<SettingsContextType>(SettingsContext);
-  const aqiApiCall = () => {
-    getLocation()
-      .then((coords) => {
-        getAqiData(coords)
-          .then((data) => {
-            setAqi(data);
-            setError(undefined);
-          })
-          .catch((error) => {
-            setError(error.toString());
-          });
-      })
-      .catch((error) => setError(error.toString()));
-  };
-  // Interval for 10s and initial API call
-  useInterval(() => {
-    aqiApiCall();
-  }, 180000);
-  useEffect(() => {
-    aqiApiCall();
-  }, []);
+  const { aqi, error } = useAqi();
   if (!aqi?.data?.[0]?.aqi || error) return null;
   return (
     <Widget>
       <AqiValue level={getAqiLevel(aqi?.data?.[0].aqi || 0)}>
         {aqi?.data?.[0].aqi || "?"}
       </AqiValue>
-      <WidgetText>AQI</WidgetText>
+      <DataWrapper>
+        <WidgetText>{getAqiLevel(aqi?.data?.[0].aqi || 0)}</WidgetText>
+        <WidgetSubText>AQI</WidgetSubText>
+      </DataWrapper>
     </Widget>
   );
 }
 
 enum AqiLevels {
-  GOOD = "good",
-  MODERATE = "moderate",
-  SENSITIVE = "sensitive",
-  UNHEALTHY = "unhealthy",
-  VERY_UNHEALTHY = "very_unhealthy",
-  HAZARDOUS = "hazardous",
+  GOOD = "Megfelelő",
+  MODERATE = "Közepes",
+  SENSITIVE = "Rossz",
+  UNHEALTHY = "Egészségtelen",
+  VERY_UNHEALTHY = "Kurva szar",
+  HAZARDOUS = "Veszélyes",
 }
 
 function getAqiLevel(value: number): AqiLevels {
@@ -70,13 +44,13 @@ const AqiValue = styled.div<{ level: AqiLevels }>`
   ${({ level }) => {
     switch (level) {
       case AqiLevels.GOOD:
-        return "background-color: #9BD74E; color: white;";
+        return `background-color: ${colors.green}; color: white;`;
       case AqiLevels.MODERATE:
-        return "background-color: #F9CF39; color: black;";
+        return `background-color: ${colors.warning}; color: black;`;
       case AqiLevels.SENSITIVE:
-        return "background-color: #F89049; color: white;";
+        return `background-color: ${colors.danger}; color: white;`;
       case AqiLevels.UNHEALTHY:
-        return "background-color: #F55E5F; color: white;";
+        return "background-color: #B93C32; color: white;";
       case AqiLevels.VERY_UNHEALTHY:
         return "background-color: #9F70B5; color: white;";
       default:

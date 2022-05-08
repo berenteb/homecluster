@@ -1,8 +1,6 @@
-import React, { ReactNode, useContext } from "react";
+import React, { FunctionComponent, useContext } from "react";
 import { SettingsContext, SettingsProvider } from "./utils/settings-context";
-import styled, {
-  ThemeProvider as StyledComponentsThemeProvider,
-} from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { colors } from "./theme/theme";
 import { WeatherWidget } from "./components/elements/widgets/weather";
 import { WidgetArea } from "./components/elements/widget";
@@ -38,24 +36,22 @@ export function App() {
   );
 }
 
-function SCThemeProvider({ children }: { children: ReactNode }) {
+const SCThemeProvider: FunctionComponent = ({ children }) => {
   const { primaryColor, glassColor } = useContext(ThemeContext);
   return (
-    <StyledComponentsThemeProvider
+    <ThemeProvider
       theme={{ primaryColor: primaryColor, glassColor: glassColor }}
     >
-      {children}
-    </StyledComponentsThemeProvider>
+      {children as JSX.Element}
+    </ThemeProvider>
   );
-}
+};
 
 const LayoutWrapper = styled.div<{
   $backgroundEnabled: boolean;
   $backgroundUrl: string;
 }>`
   width: 100%;
-  min-width: 100%;
-  max-width: 100%;
   min-height: 100vh;
   background-color: ${colors.background};
   ${({ $backgroundEnabled, $backgroundUrl }) =>
@@ -74,7 +70,7 @@ const LayoutWrapper = styled.div<{
   }
 `;
 
-function Layout({ children }: { children: ReactNode }) {
+const Layout: FunctionComponent = ({ children }) => {
   const { backgroundUrl, backgroundEnabled } = useContext(SettingsContext);
   return (
     <LayoutWrapper
@@ -84,10 +80,11 @@ function Layout({ children }: { children: ReactNode }) {
       {children}
     </LayoutWrapper>
   );
-}
+};
 
 const MarginContainer = styled.div`
-  width: 90%;
+  box-sizing: border-box;
+  width: 95%;
   padding: 50px;
   margin: auto;
 `;

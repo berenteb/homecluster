@@ -1,21 +1,31 @@
-export function getDockerData({ url }: { url: URL }) {
-  url.searchParams.set("all", "true");
-  return new Promise<DockerContainer[]>(
-    (resolve: (values: DockerContainer[]) => void, reject) => {
-      fetch(url.toString())
-        .then(async (response) => {
-          if (response.status === 200) return response.json();
-          reject(await response.text());
-        })
-        .then((data) => {
-          resolve(data);
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    }
-  );
-}
+import { useEffect, useState } from "react";
+import { useSettingsContext } from "./settings-context";
+import axios from "axios";
+import { useInterval } from "./use-interval";
+
+export const useDocker = () => {
+  const [dockerData, setDockerData] = useState<DockerContainersCategorized>();
+  const [error, setError] = useState<string>();
+  const { dockerUrl } = useSettingsContext();
+
+  const apiCall = () => {
+    if (!dockerUrl) return;
+    const url = new URL(dockerUrl);
+    url.searchParams.set("all", "true");
+    axios
+      .get<DockerContainer[]>(url.toString())
+      .then((response) => {
+        setError(undefined);
+        setDockerData(getContainersByCategories(response.data));
+      })
+      .catch((err) => setError(err));
+  };
+
+  useEffect(apiCall, []);
+  useInterval(apiCall, 10000);
+
+  return { dockerData, error };
+};
 
 export function getContainersByCategories(containers: DockerContainer[]) {
   let result: DockerContainersCategorized = {
