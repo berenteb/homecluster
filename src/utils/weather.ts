@@ -14,13 +14,15 @@ export const useWeather = () => {
   let sunrise = currentDay?.sunrise;
   let sunset = currentDay?.sunset;
 
-  if (sunrise && sunset) {
-    if (Date.now() > sunset * 1000 || Date.now() < sunrise * 1000) {
-      if (!darkMode) setDarkMode(true);
-    } else if (darkMode) {
-      setDarkMode(false);
+  useEffect(() => {
+    if (sunrise && sunset) {
+      if (Date.now() > sunset * 1000 || Date.now() < sunrise * 1000) {
+        if (!darkMode) setDarkMode(true);
+      } else if (darkMode) {
+        setDarkMode(false);
+      }
     }
-  }
+  }, [sunrise, sunset, weather]);
 
   const apiCall = () => {
     getLocation().then(({ lat, lon }) => {

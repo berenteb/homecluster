@@ -12,7 +12,7 @@ export function WeatherWidget() {
   const snow = weather.current.snow?.["1h"];
 
   let nextRain = weather.minutely.find((m) => m.precipitation > 0)?.dt;
-  if (!nextRain) nextRain = weather.hourly.slice(0, 3).find((h) => h.rain)?.dt;
+  if (!nextRain) nextRain = weather.hourly.slice(1, 4).find((h) => h.rain)?.dt;
   const nextSnow = weather.hourly.slice(0, 3).find((h) => h.snow)?.dt;
 
   let rainEnd = weather.minutely.find((m) => m.precipitation === 0)?.dt;
@@ -24,7 +24,7 @@ export function WeatherWidget() {
       <Widget>
         {weather.current?.weather?.[0].icon && (
           <img
-            src={`http://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`}
             alt={":("}
           />
         )}
@@ -42,7 +42,10 @@ export function WeatherWidget() {
       </Widget>
       {nextRain && !rain && (
         <Widget>
-          <img src={`http://openweathermap.org/img/wn/09d@2x.png`} alt={":("} />
+          <img
+            src={`https://openweathermap.org/img/wn/09d@2x.png`}
+            alt={":("}
+          />
           <DataWrapper>
             <WidgetText>
               {new Date(nextRain * 1000).toLocaleTimeString("hu-HU", {
@@ -56,7 +59,10 @@ export function WeatherWidget() {
       )}
       {rain && rainEnd && !snow && (
         <Widget>
-          <img src={`http://openweathermap.org/img/wn/04d@2x.png`} alt={":("} />
+          <img
+            src={`https://openweathermap.org/img/wn/04d@2x.png`}
+            alt={":("}
+          />
           <DataWrapper>
             <WidgetText>
               {new Date(rainEnd * 1000).toLocaleTimeString("hu-HU", {
@@ -70,7 +76,10 @@ export function WeatherWidget() {
       )}
       {snow && snowEnd && (
         <Widget>
-          <img src={`http://openweathermap.org/img/wn/04d@2x.png`} alt={":("} />
+          <img
+            src={`https://openweathermap.org/img/wn/04d@2x.png`}
+            alt={":("}
+          />
           <DataWrapper>
             <WidgetText>
               {new Date(snowEnd * 1000).toLocaleTimeString("hu-HU", {
@@ -84,7 +93,10 @@ export function WeatherWidget() {
       )}
       {nextSnow && (
         <Widget>
-          <img src={`http://openweathermap.org/img/wn/13d@2x.png`} alt={":("} />
+          <img
+            src={`https://openweathermap.org/img/wn/13d@2x.png`}
+            alt={":("}
+          />
           <DataWrapper>
             <WidgetText>
               {new Date(nextSnow).toLocaleTimeString("hu-HU", {
