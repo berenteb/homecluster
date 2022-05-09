@@ -4,7 +4,12 @@ import { FiArrowDown, FiArrowUp } from "react-icons/fi";
 
 export function WeatherWidget() {
   const { weather, error } = useWeather();
-  if (!weather?.current.temp || error) {
+  if (
+    !weather?.current.temp ||
+    !weather?.minutely ||
+    !weather?.hourly ||
+    error
+  ) {
     return null;
   }
 
