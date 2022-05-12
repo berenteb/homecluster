@@ -45,7 +45,7 @@ export const useWeather = () => {
   };
 
   useEffect(apiCall, []);
-  useInterval(apiCall, 30000);
+  useInterval(apiCall, 120000);
 
   return { weather, error };
 };
