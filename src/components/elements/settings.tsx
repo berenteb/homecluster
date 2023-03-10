@@ -12,7 +12,6 @@ type SettingsForm = {
   lat: string | number;
   lon: string | number;
   backgroundUrl: string;
-  dockerUrl: string;
 };
 
 export function Settings() {
