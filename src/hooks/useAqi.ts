@@ -5,7 +5,7 @@ import { useSettingsContext } from "../utils/settings-context";
 import { QueryKeys } from "../utils/queryKeys";
 import { Config } from "../utils/config";
 
-const url = new URL("http://api.openweathermap.org/data/2.5/air_pollution");
+const url = new URL("https://api.openweathermap.org/data/2.5/air_pollution");
 
 export const useAqi = () => {
   const {
