@@ -1,6 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@350&display=swap');
+import { createGlobalStyle } from "styled-components";
 
-body {
+export const GlobalStyle = createGlobalStyle`
+  body{
     width: 100%;
     height: 100vh;
     margin: 0;
@@ -8,4 +9,5 @@ body {
     font-family: 'Work Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
+  }
+`;

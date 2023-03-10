@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, PropsWithChildren, useState } from "react";
 
 const DEFAULT_PRIMARY_COLOR = "#455a64";
 const DEFAULT_GLASS_COLOR = "#ffffff";
@@ -26,18 +26,17 @@ export const ThemeContext = createContext<ThemeContextType>({
   setThemeOverlayVisible: () => {},
 });
 
-export function ThemeContextProvider({ children }: { children: ReactNode }) {
-  const [primaryColor, setPrimaryColorState] = useState<string>(
+export function ThemeContextProvider({ children }: PropsWithChildren) {
+  const [primaryColor, setPrimaryColorState] = useState(
     localStorage.getItem(LocalStorageKeys.PRIMARY_COLOR) ||
       DEFAULT_PRIMARY_COLOR
   );
 
-  const [glassColor, setGlassColorState] = useState<string>(
+  const [glassColor, setGlassColorState] = useState(
     localStorage.getItem(LocalStorageKeys.GLASS_COLOR) || DEFAULT_GLASS_COLOR
   );
 
-  const [themeOverlayVisible, setThemeOverlayVisibleState] =
-    useState<boolean>(false);
+  const [themeOverlayVisible, setThemeOverlayVisibleState] = useState(false);
 
   const setThemeOverlayVisible = (visible: boolean) => {
     setThemeOverlayVisibleState(visible);
@@ -56,12 +55,12 @@ export function ThemeContextProvider({ children }: { children: ReactNode }) {
   return (
     <ThemeContext.Provider
       value={{
-        primaryColor: primaryColor,
-        glassColor: glassColor,
-        setPrimaryColor: setPrimaryColor,
-        setGlassColor: setGlassColor,
-        themeOverlayVisible: themeOverlayVisible,
-        setThemeOverlayVisible: setThemeOverlayVisible,
+        primaryColor,
+        glassColor,
+        setPrimaryColor,
+        setGlassColor,
+        themeOverlayVisible,
+        setThemeOverlayVisible,
       }}
     >
       {children}

@@ -1,56 +1,31 @@
-import { useSettingsContext } from "./settings-context";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { useInterval } from "./use-interval";
+import { useQuery } from "react-query";
+
+import { useSettingsContext } from "../utils/settings-context";
+import { Config } from "../utils/config";
+import { QueryKeys } from "../utils/queryKeys";
 
 const url = new URL("https://api.openweathermap.org/data/2.5/onecall");
 
 export const useWeather = () => {
-  const [weather, setWeather] = useState<OWMData>();
-  const [error, setError] = useState<string>();
-  const { getLocation, darkMode, setDarkMode } = useSettingsContext();
+  const {
+    staticCoordinates: { lat, lon },
+  } = useSettingsContext();
 
-  const currentDay = weather?.daily[0];
-  let sunrise = currentDay?.sunrise;
-  let sunset = currentDay?.sunset;
-
-  useEffect(() => {
-    if (sunrise && sunset) {
-      if (Date.now() > sunset * 1000 || Date.now() < sunrise * 1000) {
-        if (!darkMode) setDarkMode(true);
-      } else if (darkMode) {
-        setDarkMode(false);
-      }
+  return useQuery(QueryKeys.WEATHER, async () => {
+    const apiKey = Config.OWM_API_KEY;
+    if (!apiKey) {
+      throw new Error("Nincs API kulcs!");
     }
-  }, [sunrise, sunset, weather]);
-
-  const apiCall = () => {
-    getLocation().then(({ lat, lon }) => {
-      const apiKey = process.env.REACT_APP_OWM_API_KEY;
-      if (!apiKey) {
-        setError("Nincs API kulcs!");
-        return;
-      }
-      url.searchParams.set("lat", lat.toString());
-      url.searchParams.set("lon", lon.toString());
-      url.searchParams.set("appid", apiKey);
-      axios
-        .get<OWMData>(url.toString())
-        .then((response) => {
-          setError(undefined);
-          setWeather(response.data);
-        })
-        .catch((err) => setError(err));
-    });
-  };
-
-  useEffect(apiCall, []);
-  useInterval(apiCall, 120000);
-
-  return { weather, error };
+    url.searchParams.set("lat", lat.toString());
+    url.searchParams.set("lon", lon.toString());
+    url.searchParams.set("appid", apiKey);
+    const response = await axios.get<OWMData>(url.toString());
+    return response.data;
+  });
 };
 
-export interface Weather {
+export interface UseWeather {
   id: number;
   main: string;
   description: string;
@@ -71,7 +46,7 @@ export interface Current {
   visibility: number;
   wind_speed: number;
   wind_deg: number;
-  weather: Weather[];
+  weather: UseWeather[];
   rain?: Rain;
   snow?: Rain;
 }

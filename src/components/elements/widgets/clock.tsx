@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useInterval } from "../../../utils/use-interval";
-import { DataWrapper, Widget, WidgetSubText, WidgetText } from "../widget";
 import { BiTime } from "react-icons/bi";
+
+import { useState } from "react";
+import { useInterval } from "../../../hooks/useInterval";
+import { DataWrapper, Widget, WidgetSubText, WidgetText } from "../widget";
 
 export function ClockWidget() {
   return (

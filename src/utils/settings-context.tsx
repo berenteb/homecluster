@@ -6,12 +6,9 @@ const DEFAULT_COORDINATES: Coordinates = {
 };
 
 const LocalStorageKeys = {
-  LOCATION_ENABLED: "locationEnabled",
-  BACKGROUND_ENABLED: "backgroundEnabled",
   STATIC_COORDS_LAT: "lat",
   STATIC_COORDS_LON: "lon",
   BACKGROUND_URL: "backgroundUrl",
-  DOCKER_URL: "dockerUrl",
 };
 
 export type Coordinates = {
@@ -28,52 +25,28 @@ function getCoordsFromLocalStorage(): Coordinates {
 }
 
 export type SettingsContextType = {
-  locationEnabled: boolean;
-  setLocationEnabled: (enabled: boolean) => void;
-  backgroundEnabled: boolean;
-  setBackgroundEnabled: (enabled: boolean) => void;
   staticCoordinates: Coordinates;
   setStaticCoordinates: (coordinates: Coordinates) => void;
-  getLocation: () => Promise<Coordinates>;
   settingsOverlayVisible: boolean;
   setSettingsOverlayVisible: (visible: boolean) => void;
   backgroundUrl: string;
   setBackgroundUrl: (url: string) => void;
-  dockerUrl: string;
-  setDockerUrl: (url: string) => void;
   darkMode: boolean;
   setDarkMode: (enabled: boolean) => void;
 };
 
 export const SettingsContext = createContext<SettingsContextType>({
-  locationEnabled: !!localStorage.getItem(LocalStorageKeys.LOCATION_ENABLED),
-  setLocationEnabled: () => {},
-  backgroundEnabled: !!localStorage.getItem(
-    LocalStorageKeys.BACKGROUND_ENABLED
-  ),
-  setBackgroundEnabled: () => {},
   staticCoordinates: getCoordsFromLocalStorage(),
   setStaticCoordinates: () => {},
-  getLocation: () => new Promise<Coordinates>((resolve, reject) => reject()),
   settingsOverlayVisible: false,
   setSettingsOverlayVisible: () => {},
   backgroundUrl: "",
   setBackgroundUrl: () => {},
-  dockerUrl: "",
-  setDockerUrl: () => {},
   darkMode: false,
   setDarkMode: () => {},
 });
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [locationEnabled, setLocationEnabledState] = useState<boolean>(
-    localStorage.getItem(LocalStorageKeys.LOCATION_ENABLED) === "true"
-  );
-
-  const [backgroundEnabled, setBackgroundEnabledState] = useState<boolean>(
-    localStorage.getItem(LocalStorageKeys.BACKGROUND_ENABLED) === "true"
-  );
-
   const [staticCoordinates, setStaticCoordinatesState] = useState<Coordinates>(
     getCoordsFromLocalStorage()
   );
@@ -84,26 +57,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [backgroundUrl, setBackgroundUrlState] = useState<string>(
     localStorage.getItem(LocalStorageKeys.BACKGROUND_URL) || ""
   );
-
-  const [dockerUrl, setDockerUrlState] = useState<string>(
-    localStorage.getItem(LocalStorageKeys.DOCKER_URL) || ""
-  );
-
-  const setLocationEnabled = (enabled: boolean) => {
-    getLocation()
-      .then(() => {
-        localStorage.setItem(LocalStorageKeys.LOCATION_ENABLED, enabled + "");
-        setLocationEnabledState(enabled);
-      })
-      .catch(() => {
-        localStorage.setItem(LocalStorageKeys.LOCATION_ENABLED, false + "");
-        setLocationEnabledState(false);
-      });
-  };
-  const setBackgroundEnabled = (enabled: boolean) => {
-    localStorage.setItem(LocalStorageKeys.BACKGROUND_ENABLED, enabled + "");
-    setBackgroundEnabledState(enabled);
-  };
 
   const setStaticCoordinates = (coordinates: Coordinates) => {
     localStorage.setItem(
@@ -121,38 +74,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSettingsOverlayVisibleState(visible);
   };
 
-  const getLocation = () => {
-    return new Promise<Coordinates>((resolve, reject) => {
-      if (locationEnabled) {
-        navigator.geolocation.getCurrentPosition(
-          async (geodata) => {
-            if (geodata.coords.accuracy > 100) {
-              reject("Pontatlan a helymeghatározás");
-            }
-            resolve({
-              lat: geodata.coords.latitude,
-              lon: geodata.coords.longitude,
-            });
-          },
-          () => {
-            setLocationEnabled(false);
-            reject("Helymeghatározás nem sikerült, így ki lett kapcsolva.");
-          }
-        );
-      } else {
-        resolve(staticCoordinates);
-      }
-    });
-  };
-
   const setBackgroundUrl = (url: string) => {
     localStorage.setItem(LocalStorageKeys.BACKGROUND_URL, url);
     setBackgroundUrlState(url);
-  };
-
-  const setDockerUrl = (url: string) => {
-    localStorage.setItem(LocalStorageKeys.DOCKER_URL, url);
-    setDockerUrlState(url);
   };
 
   const [darkMode, setDarkMode] = useState(false);
@@ -160,21 +84,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   return (
     <SettingsContext.Provider
       value={{
-        locationEnabled: locationEnabled,
-        setLocationEnabled: setLocationEnabled,
-        backgroundEnabled: backgroundEnabled,
-        setBackgroundEnabled: setBackgroundEnabled,
-        staticCoordinates: staticCoordinates,
-        setStaticCoordinates: setStaticCoordinates,
-        getLocation: getLocation,
-        settingsOverlayVisible: settingsOverlayVisible,
-        setSettingsOverlayVisible: setSettingsOverlayVisible,
-        backgroundUrl: backgroundUrl,
-        setBackgroundUrl: setBackgroundUrl,
-        dockerUrl: dockerUrl,
-        setDockerUrl: setDockerUrl,
-        darkMode: darkMode,
-        setDarkMode: setDarkMode,
+        staticCoordinates,
+        setStaticCoordinates,
+        settingsOverlayVisible,
+        setSettingsOverlayVisible,
+        backgroundUrl,
+        setBackgroundUrl,
+        darkMode,
+        setDarkMode,
       }}
     >
       {children}

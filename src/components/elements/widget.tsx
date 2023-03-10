@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { ReactNode } from "react";
-import { Glassmorphism } from "./glassmorphism";
+import { PropsWithChildren } from "react";
 import { spacing } from "../../theme/theme";
+import { useSettingsContext } from "../../utils/settings-context";
 
 export const WidgetArea = styled.div`
   width: 100%;
@@ -20,21 +20,23 @@ export const WidgetArea = styled.div`
   }
 `;
 
-export function Widget({ children }: { children: ReactNode }) {
-  return (
-    <Glassmorphism>
-      <WidgetWrapper>{children}</WidgetWrapper>
-    </Glassmorphism>
-  );
+export function Widget({ children }: PropsWithChildren) {
+  const { darkMode } = useSettingsContext();
+  return <WidgetWrapper darkMode={darkMode}>{children}</WidgetWrapper>;
 }
 
-export const WidgetWrapper = styled.div`
-  box-sizing: border-box;
-  border-radius: 20px;
-  padding: 10px;
+export const WidgetWrapper = styled.div<{ darkMode: boolean }>`
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+  background: ${({ theme, darkMode }) =>
+    darkMode ? theme.primaryColor : theme.glassColor};
+  color: ${({ theme, darkMode }) =>
+    darkMode ? theme.glassColor : theme.primaryColor};
+  border-radius: 10px;
+  padding: ${spacing.md};
   width: 100%;
+
   svg,
   i {
     font-size: 70px;

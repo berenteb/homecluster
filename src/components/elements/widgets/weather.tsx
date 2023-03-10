@@ -1,9 +1,12 @@
 import { DataWrapper, Widget, WidgetSubText, WidgetText } from "../widget";
-import { useWeather } from "../../../utils/weather";
+import { useWeather } from "../../../hooks/useWeather";
 import { FiArrowDown, FiArrowUp } from "react-icons/fi";
+import { useThemeChange } from "../../../hooks/useThemeChange";
 
 export function WeatherWidget() {
-  const { weather, error } = useWeather();
+  const { data: weather, error } = useWeather();
+  useThemeChange(weather);
+
   if (
     !weather?.current.temp ||
     !weather?.minutely ||
@@ -104,7 +107,7 @@ export function WeatherWidget() {
           />
           <DataWrapper>
             <WidgetText>
-              {new Date(nextSnow).toLocaleTimeString("hu-HU", {
+              {new Date(nextSnow * 1000).toLocaleTimeString("hu-HU", {
                 hour: "2-digit",
                 minute: "2-digit",
               })}

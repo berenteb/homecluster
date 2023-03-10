@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
 import styled from "styled-components";
+import { SwatchesPicker } from "react-color";
+
 import { Button, ButtonKinds } from "./button";
 import { ThemeContext } from "../../utils/theme-context";
 import { OverlayPanelWrapper, OverlayWrapper } from "./settings";
-import { SwatchesPicker } from "react-color";
 import { spacing } from "../../theme/theme";
 
 export function ThemeOverlay() {

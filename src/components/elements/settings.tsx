@@ -17,24 +17,17 @@ type SettingsForm = {
 
 export function Settings() {
   const {
-    locationEnabled,
-    setLocationEnabled,
     staticCoordinates,
     setStaticCoordinates,
     settingsOverlayVisible,
     setSettingsOverlayVisible,
     backgroundUrl,
     setBackgroundUrl,
-    backgroundEnabled,
-    setBackgroundEnabled,
-    dockerUrl,
-    setDockerUrl,
   } = useContext<SettingsContextType>(SettingsContext);
   const defaultValues = {
     lat: staticCoordinates.lat,
     lon: staticCoordinates.lon,
     backgroundUrl: backgroundUrl,
-    dockerUrl: dockerUrl,
   };
   const {
     handleSubmit,
@@ -44,6 +37,7 @@ export function Settings() {
   } = useForm<SettingsForm>({
     defaultValues: defaultValues,
   });
+
   const saveSettings = (values: SettingsForm) => {
     try {
       const newLat = parseFloat(
@@ -52,22 +46,19 @@ export function Settings() {
       const newLon = parseFloat(
         values.lon.toString() || staticCoordinates.lon.toString()
       );
-      if (!locationEnabled) {
-        setStaticCoordinates({ lat: newLat, lon: newLon });
-      }
+      setStaticCoordinates({ lat: newLat, lon: newLon });
     } catch (e) {
-      if (!locationEnabled) {
-        setStaticCoordinates({
-          lat: staticCoordinates.lat,
-          lon: staticCoordinates.lon,
-        });
-      }
+      setStaticCoordinates({
+        lat: staticCoordinates.lat,
+        lon: staticCoordinates.lon,
+      });
     }
     setBackgroundUrl(values.backgroundUrl);
-    setDockerUrl(values.dockerUrl);
     setSettingsOverlayVisible(false);
   };
+
   if (!settingsOverlayVisible) return null;
+
   return (
     <OverlayWrapper
       id="settingsOverlay"
@@ -78,15 +69,9 @@ export function Settings() {
     >
       <OverlayPanelWrapper>
         <h1>Beállítások</h1>
-        <h3>Helymeghatározás</h3>
-        <CheckBox checked={locationEnabled} onChange={setLocationEnabled} />
-        <h3>Háttérkép</h3>
-        <CheckBox checked={backgroundEnabled} onChange={setBackgroundEnabled} />
-        <i>Kapcsolók állításakor a beállítás azonnal megtörténik!</i>
         <StyledForm onSubmit={handleSubmit(saveSettings)}>
           <h3>Statikus szélességi fok</h3>
           <TextField
-            disabled={locationEnabled}
             {...register("lat", {
               pattern: { value: /\d+[.,]\d+$/, message: "Rossz formátum" },
             })}
@@ -94,7 +79,6 @@ export function Settings() {
           {errors.lat && <ErrorText>{errors.lat?.message}</ErrorText>}
           <h3>Statikus hosszúsági fok</h3>
           <TextField
-            disabled={locationEnabled}
             {...register("lon", {
               pattern: { value: /\d+[.,]\d+$/, message: "Rossz formátum" },
             })}
@@ -104,12 +88,6 @@ export function Settings() {
           <TextField {...register("backgroundUrl")} />
           {errors.backgroundUrl && (
             <ErrorText>{errors.backgroundUrl?.message}</ErrorText>
-          )}
-
-          <h3>Docker URL</h3>
-          <TextField {...register("dockerUrl")} />
-          {errors.dockerUrl && (
-            <ErrorText>{errors.dockerUrl?.message}</ErrorText>
           )}
 
           <ButtonGroup>
@@ -165,69 +143,6 @@ export const OverlayPanelWrapper = styled.div`
     background-color: black;
     color: white;
   }
-`;
-
-export function CheckBox({
-  checked,
-  onChange,
-}: {
-  checked: boolean;
-  onChange: (value: boolean) => void;
-}) {
-  return (
-    <CheckBoxWrapper
-      checked={checked}
-      onChange={(e) => {
-        onChange(e.target.checked);
-      }}
-      type="checkbox"
-    />
-  );
-}
-
-export const CheckBoxWrapper = styled.input`
-  &[type="checkbox"] {
-    position: relative;
-    min-width: 50px;
-    max-width: 50px;
-    min-height: 50px;
-    max-height: 50px;
-    color: black;
-    border: 1px solid gray;
-    border-radius: 300px;
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
-  }
-
-  ::before {
-    position: absolute;
-    content: '';
-    display: block;
-    width: 7px;
-    height: 20px;
-    border-style: solid;
-    border-color: white;
-    border-width: 0 4px 4px 0;
-    transform: rotate(45deg);
-    @media (prefers-color-scheme: dark) {
-      border-color: black;
-    }
-  }
-
-  :checked {
-    color: white;
-    border-color: ${({ theme }) => theme.primaryColor};
-    background: ${({ theme }) => theme.primaryColor};
-    @media (prefers-color-scheme: dark) {
-      border-color: ${colors.darkTheme};
-      background-color: ${colors.darkTheme};
-    }
 `;
 
 const TextField = styled.input`

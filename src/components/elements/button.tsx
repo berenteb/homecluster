@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   animations,
   borderRadius,
@@ -7,8 +7,6 @@ import {
   margins,
   spacing,
 } from "../../theme/theme";
-import { ReactNode } from "react";
-import { useNavigate } from "react-router";
 
 const ButtonBaseStyle = styled.button`
   appearance: none;
@@ -39,49 +37,28 @@ export const Button = styled(ButtonBaseStyle)<{ kind?: ButtonKinds }>`
   ${({ kind, theme }) => {
     switch (kind) {
       case ButtonKinds.TINTED:
-        return `background-color: ${colors.primaryTranslucent}; color: ${theme.primaryColor};`;
+        return css`
+          background-color: ${colors.primaryTranslucent};
+          color: ${theme.primaryColor};
+        `;
       case ButtonKinds.PRIMARY:
-        return `background-color: ${theme.primaryColor}; color: white;`;
+        return css`
+          background-color: ${theme.primaryColor};
+          color: white;
+        `;
       case ButtonKinds.SECONDARY:
-        return `background-color: white; color: ${theme.primaryColor}; border: 2px solid ${theme.primaryColor};`;
+        return css`
+          background-color: white;
+          color: ${theme.primaryColor};
+          border: 2px solid ${theme.primaryColor};
+        `;
       default:
-        return `background-color: white; color: black;`;
+        return css`
+          background-color: white;
+          color: black;
+        `;
     }
   }};
   ${animations.scale}
   margin: ${margins.xs};
-`;
-
-export function LinkButton({
-  to,
-  children,
-  kind,
-  className,
-}: {
-  to: string;
-  children: ReactNode;
-  className?: string;
-  kind?: ButtonKinds;
-}) {
-  const navigate = useNavigate();
-  return (
-    <Button
-      kind={kind}
-      className={className}
-      onClick={() => {
-        navigate(to);
-      }}
-    >
-      {children}
-    </Button>
-  );
-}
-
-export const ButtonRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin: ${margins.sm} 0;
-  width: 100%;
 `;

@@ -5,11 +5,10 @@ import { ThemeContext } from "../../utils/theme-context";
 import { VscGear } from "react-icons/vsc";
 import { FaPalette } from "react-icons/fa";
 import { animations, spacing } from "../../theme/theme";
-import { Glassmorphism } from "./glassmorphism";
-import { useInterval } from "../../utils/use-interval";
+import { useInterval } from "../../hooks/useInterval";
 
 export function Title() {
-  const { setSettingsOverlayVisible } = useSettingsContext();
+  const { setSettingsOverlayVisible, darkMode } = useSettingsContext();
   const { setThemeOverlayVisible } = useContext(ThemeContext);
   const [time, setTime] = useState<Date>(new Date());
   useInterval(() => {
@@ -23,27 +22,36 @@ export function Title() {
   return (
     <TitleWrapper>
       <TitleText>{greetingText}</TitleText>
-      <OverlayButtons>
-        <Glassmorphism>
-          <FaPalette
-            onClick={() => {
-              setThemeOverlayVisible(true);
-            }}
-          />
-          <VscGear
-            onClick={() => {
-              setSettingsOverlayVisible(true);
-            }}
-          />
-        </Glassmorphism>
+      <OverlayButtons darkMode={darkMode}>
+        <FaPalette
+          onClick={() => {
+            setThemeOverlayVisible(true);
+          }}
+        />
+        <VscGear
+          onClick={() => {
+            setSettingsOverlayVisible(true);
+          }}
+        />
       </OverlayButtons>
     </TitleWrapper>
   );
 }
 
-const OverlayButtons = styled.div`
+const OverlayButtons = styled.div<{ darkMode: boolean }>`
   display: none;
-  > * > * {
+  align-items: center;
+  box-sizing: border-box;
+  background: ${({ theme, darkMode }) =>
+    darkMode ? theme.primaryColor : theme.glassColor};
+  color: ${({ theme, darkMode }) =>
+    darkMode ? theme.glassColor : theme.primaryColor};
+  border-radius: 10px;
+  padding: ${spacing.md};
+  :hover {
+    display: flex;
+  }
+  svg {
     font-size: 50px;
     cursor: pointer;
     transition: 0.2s ease-in;
