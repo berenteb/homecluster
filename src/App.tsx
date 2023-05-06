@@ -14,7 +14,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { GlobalStyle } from "./theme/globalStyle";
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchInterval: 30000 } },
+  defaultOptions: { queries: { refetchInterval: 60000 } },
 });
 
 export function App() {
