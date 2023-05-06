@@ -16,5 +16,5 @@ export function useThemeChange(weather: OWMData | undefined) {
         setDarkMode(false);
       }
     }
-  }, [darkMode, setDarkMode, sunrise, sunset]);
+  }, [darkMode, setDarkMode, sunrise, sunset, weather]);
 }
