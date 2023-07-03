@@ -10,4 +10,10 @@ export const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  h1 {
+    font-size: 30px;
+    text-align: center;
+    margin: 0;
+  }
 `;

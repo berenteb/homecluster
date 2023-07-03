@@ -7,11 +7,8 @@ export const WidgetArea = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
-  flex-direction: row;
-  padding-bottom: 20px;
-  box-sizing: border-box;
+  grid-auto-rows: 170px;
+  grid-gap: 20px;
   @media screen and (max-width: 1800px) {
     grid-template-columns: repeat(2, 1fr);
   }

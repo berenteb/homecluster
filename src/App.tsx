@@ -1,20 +1,20 @@
 import { PropsWithChildren, useContext } from "react";
-import { SettingsContext, SettingsProvider } from "./utils/settings-context";
+import { QueryClient, QueryClientProvider } from "react-query";
 import styled, { ThemeProvider } from "styled-components";
-import { colors } from "./theme/theme";
-import { WeatherWidget } from "./components/elements/widgets/weather";
-import { WidgetArea } from "./components/elements/widget";
 import { Settings } from "./components/elements/settings";
-import { Title } from "./components/elements/title";
-import { ThemeContext, ThemeContextProvider } from "./utils/theme-context";
 import { ThemeOverlay } from "./components/elements/theme-overlay";
+import { Title } from "./components/elements/title";
+import { WidgetArea } from "./components/elements/widget";
 import { AqiWidget } from "./components/elements/widgets/aqi";
 import { ClockWidget } from "./components/elements/widgets/clock";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { WeatherWidget } from "./components/elements/widgets/weather";
 import { GlobalStyle } from "./theme/globalStyle";
+import { colors } from "./theme/theme";
+import { SettingsContext, SettingsProvider } from "./utils/settings-context";
+import { ThemeContext, ThemeContextProvider } from "./utils/theme-context";
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchInterval: 60000 } },
+  defaultOptions: { queries: { refetchInterval: 120000 } },
 });
 
 export function App() {
@@ -23,17 +23,16 @@ export function App() {
       <SettingsProvider>
         <ThemeContextProvider>
           <SCThemeProvider>
+            <ThemeOverlay />
+            <Settings />
             <Layout>
-              <Settings />
-              <ThemeOverlay />
-              <MarginContainer>
-                <Title />
-                <WidgetArea>
-                  <ClockWidget />
-                  <WeatherWidget />
-                  <AqiWidget />
-                </WidgetArea>
-              </MarginContainer>
+              <Title />
+              <WidgetArea>
+                <ClockWidget />
+                <WeatherWidget />
+                <AqiWidget />
+                {/*<CamWidget />*/}
+              </WidgetArea>
             </Layout>
           </SCThemeProvider>
         </ThemeContextProvider>
@@ -63,12 +62,8 @@ const LayoutWrapper = styled.div<{
   ${({ backgroundUrl }) =>
     backgroundUrl !== "" && `background-image: url(${backgroundUrl});`};
   background-size: cover;
-
-  h1 {
-    font-size: 30px;
-    text-align: center;
-    margin: 0;
-  }
+  padding: 5%;
+  box-sizing: border-box;
   @media (prefers-color-scheme: dark) {
     background-color: black;
   }
@@ -80,10 +75,3 @@ function Layout({ children }: PropsWithChildren) {
     <LayoutWrapper backgroundUrl={backgroundUrl}>{children}</LayoutWrapper>
   );
 }
-
-const MarginContainer = styled.div`
-  box-sizing: border-box;
-  width: 95%;
-  padding: 50px;
-  margin: auto;
-`;
